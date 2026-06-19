@@ -266,6 +266,49 @@ function Footer() {
   )
 }
 
+function ServiceCard({ service, onSelect }: { service: Service; onSelect: () => void }) {
+  return (
+    <div className="service-card" onClick={onSelect}>
+      <div className="service-card-icon">{service.icon}</div>
+      <div className="service-card-body">
+        <span className="service-card-sub">{service.subtitle}</span>
+        <h3 className="service-card-title">{service.title}</h3>
+        <p className="service-card-desc">{service.description}</p>
+        <div className="service-card-meta">
+          <span className="meta-price">{service.price}</span>
+          <span className="meta-days">
+            <Clock size={13} />
+            {service.days}
+          </span>
+        </div>
+      </div>
+      <div className="service-card-arrow">
+        <ChevronRight size={18} />
+      </div>
+    </div>
+  )
+}
+
+function ServicesPage({ onSelect }: { onSelect: (s: Service) => void }) {
+  return (
+    <div className="page-inner">
+      <div className="page-header">
+        <h2 className="page-title">Servicios Legales</h2>
+        <p className="page-subtitle">Seleccione el trámite que necesita iniciar</p>
+      </div>
+      <div className="services-grid">
+        {services.map(s => (
+          <ServiceCard key={s.id} service={s} onSelect={() => onSelect(s)} />
+        ))}
+      </div>
+      <div className="info-banner">
+        <AlertCircle size={18} />
+        <p>¿No encuentra su trámite? Contáctenos al <strong>(2) 2345 6789</strong> o escríbanos a <strong>contacto@notariacentral.cl</strong></p>
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   return <div className="app" />
 }
