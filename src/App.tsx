@@ -502,6 +502,123 @@ function Confirmation({ service, onReset }: { service: Service; onReset: () => v
   )
 }
 
+function LoginPage({ onBack }: { onBack: () => void }) {
+  const [tab, setTab] = useState<'login' | 'register'>('login')
+  const [rut, setRut] = useState('')
+  const [pass, setPass] = useState('')
+  const [showMsg, setShowMsg] = useState(false)
+
+  function handleLogin() {
+    if (rut && pass) setShowMsg(true)
+  }
+
+  return (
+    <div className="page-inner login-page">
+      <button className="back-btn" onClick={onBack}><ArrowLeft size={16} />Volver</button>
+      <div className="login-card">
+        <div className="login-logo"><Scale size={32} /></div>
+        <h2 className="login-title">Portal de Clientes</h2>
+        <p className="login-sub">Acceda a sus trámites, documentos y agenda</p>
+        <div className="login-tabs">
+          <button className={`login-tab ${tab === 'login' ? 'active' : ''}`} onClick={() => setTab('login')}>Iniciar sesión</button>
+          <button className={`login-tab ${tab === 'register' ? 'active' : ''}`} onClick={() => setTab('register')}>Registrarse</button>
+        </div>
+        {showMsg ? (
+          <div className="login-success">
+            <CheckCircle size={36} />
+            <p>Bienvenido a su portal notarial. En una implementación real, aquí vería su panel de trámites.</p>
+            <button className="btn-primary" onClick={() => setShowMsg(false)}>Volver al login</button>
+          </div>
+        ) : (
+          <div className="login-form">
+            <div className="field-group">
+              <label className="field-label">RUT<span className="required-dot">*</span></label>
+              <input className="field-input" type="text" placeholder="12.345.678-9" value={rut} onChange={e => setRut(formatRut(e.target.value))} maxLength={12} />
+            </div>
+            {tab === 'login' ? (
+              <>
+                <div className="field-group">
+                  <label className="field-label">Contraseña<span className="required-dot">*</span></label>
+                  <input className="field-input" type="password" placeholder="••••••••" value={pass} onChange={e => setPass(e.target.value)} />
+                </div>
+                <a href="#" className="forgot-pass">¿Olvidó su contraseña?</a>
+                <button className="btn-primary btn-full" onClick={handleLogin}>Ingresar</button>
+              </>
+            ) : (
+              <>
+                <div className="field-group">
+                  <label className="field-label">Nombre completo</label>
+                  <input className="field-input" type="text" placeholder="Juan Pérez González" />
+                </div>
+                <div className="field-group">
+                  <label className="field-label">Correo electrónico</label>
+                  <input className="field-input" type="email" placeholder="correo@ejemplo.cl" />
+                </div>
+                <div className="field-group">
+                  <label className="field-label">Nueva contraseña</label>
+                  <input className="field-input" type="password" placeholder="Mínimo 8 caracteres" />
+                </div>
+                <button className="btn-primary btn-full">Crear cuenta</button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
-  return <div className="app" />
+  const [view, setView] = useState<View>('home')
+  const [selectedService, setSelectedService] = useState<Service | null>(null)
+
+  function handleSelectService(s: Service) {
+    setSelectedService(s)
+    setView('tramite')
+  }
+
+  return (
+    <div className="app">
+      <Navbar view={view} setView={setView} setSelectedService={setSelectedService} />
+      <main className="main">
+        {view === 'home' && (
+          <>
+            <HeroSection setView={setView} />
+            <div className="home-services">
+              <div className="page-inner">
+                <div className="page-header">
+                  <h2 className="page-title">Trámites frecuentes</h2>
+                  <p className="page-subtitle">Empiece su proceso en minutos</p>
+                </div>
+                <div className="services-grid">
+                  {services.slice(0, 3).map(s => (
+                    <ServiceCard key={s.id} service={s} onSelect={() => handleSelectService(s)} />
+                  ))}
+                </div>
+                <div style={{ textAlign: 'center', marginTop: 32 }}>
+                  <button className="btn-outline" onClick={() => setView('services')}>
+                    Ver todos los servicios
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+        {view === 'services' && <ServicesPage onSelect={handleSelectService} />}
+        {view === 'tramite' && selectedService && (
+          <TramiteForm
+            service={selectedService}
+            onBack={() => setView('services')}
+            onSubmit={() => setView('confirmation')}
+          />
+        )}
+        {view === 'confirmation' && selectedService && (
+          <Confirmation service={selectedService} onReset={() => { setView('home'); setSelectedService(null) }} />
+        )}
+        {view === 'login' && <LoginPage onBack={() => setView('home')} />}
+      </main>
+      <Footer />
+    </div>
+  )
 }
