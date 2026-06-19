@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import {
   Scale, FileText, Home, Users, Shield, ChevronRight,
-  Phone, Mail, MapPin, Clock, CheckCircle,
+  Phone, Mail, MapPin, Clock, CheckCircle, ArrowLeft,
   User, Upload, AlertCircle,
   Stamp, Building2, BookOpen, FileSignature, Star
 } from 'lucide-react'
@@ -304,6 +305,198 @@ function ServicesPage({ onSelect }: { onSelect: (s: Service) => void }) {
       <div className="info-banner">
         <AlertCircle size={18} />
         <p>¿No encuentra su trámite? Contáctenos al <strong>(2) 2345 6789</strong> o escríbanos a <strong>contacto@notariacentral.cl</strong></p>
+      </div>
+    </div>
+  )
+}
+
+function TramiteForm({ service, onBack, onSubmit }: {
+  service: Service
+  onBack: () => void
+  onSubmit: () => void
+}) {
+  const [formData, setFormData] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [uploading, setUploading] = useState<Record<string, boolean>>({})
+
+  function handleChange(name: string, value: string, type?: string) {
+    let final = value
+    if (type === 'rut') final = formatRut(value)
+    setFormData(p => ({ ...p, [name]: final }))
+    if (errors[name]) setErrors(p => { const n = { ...p }; delete n[name]; return n })
+  }
+
+  function validate() {
+    const errs: Record<string, string> = {}
+    service.fields.forEach(f => {
+      if (f.required && !formData[f.name]) errs[f.name] = 'Este campo es obligatorio'
+    })
+    setErrors(errs)
+    return Object.keys(errs).length === 0
+  }
+
+  function handleSubmit() {
+    if (validate()) onSubmit()
+  }
+
+  function simulateUpload(name: string) {
+    setUploading(p => ({ ...p, [name]: true }))
+    setTimeout(() => {
+      setUploading(p => ({ ...p, [name]: false }))
+      setFormData(p => ({ ...p, [name]: 'documento_cargado.pdf' }))
+    }, 1500)
+  }
+
+  return (
+    <div className="page-inner">
+      <button className="back-btn" onClick={onBack}>
+        <ArrowLeft size={16} />
+        Volver a servicios
+      </button>
+
+      <div className="tramite-header">
+        <div className="tramite-icon">{service.icon}</div>
+        <div>
+          <span className="service-card-sub">{service.subtitle}</span>
+          <h2 className="page-title" style={{ marginBottom: 4 }}>{service.title}</h2>
+          <div className="tramite-meta-row">
+            <span className="meta-price">{service.price}</span>
+            <span className="meta-days"><Clock size={13} />{service.days}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="tramite-layout">
+        <div className="form-panel">
+          <h3 className="panel-title">Datos del trámite</h3>
+          <div className="form-fields">
+            {service.fields.map(field => (
+              <div key={field.name} className={`field-group ${field.type === 'textarea' ? 'full-width' : ''}`}>
+                <label className="field-label">
+                  {field.label}
+                  {field.required && <span className="required-dot">*</span>}
+                </label>
+                {field.type === 'select' ? (
+                  <select
+                    className={`field-input ${errors[field.name] ? 'field-error' : ''}`}
+                    value={formData[field.name] || ''}
+                    onChange={e => handleChange(field.name, e.target.value)}
+                  >
+                    <option value="">Seleccione una opción...</option>
+                    {field.options?.map(o => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                ) : field.type === 'textarea' ? (
+                  <textarea
+                    className={`field-textarea ${errors[field.name] ? 'field-error' : ''}`}
+                    placeholder={field.placeholder}
+                    value={formData[field.name] || ''}
+                    onChange={e => handleChange(field.name, e.target.value)}
+                    rows={3}
+                  />
+                ) : field.type === 'file' ? (
+                  <div className="file-upload" onClick={() => simulateUpload(field.name)}>
+                    {uploading[field.name] ? (
+                      <span className="uploading-text">Cargando...</span>
+                    ) : formData[field.name] ? (
+                      <span className="file-done"><CheckCircle size={15} />{formData[field.name]}</span>
+                    ) : (
+                      <><Upload size={16} /><span>Seleccionar archivo</span></>
+                    )}
+                  </div>
+                ) : (
+                  <input
+                    className={`field-input ${errors[field.name] ? 'field-error' : ''}`}
+                    type={field.type === 'rut' ? 'text' : field.type}
+                    placeholder={field.placeholder}
+                    value={formData[field.name] || ''}
+                    onChange={e => handleChange(field.name, e.target.value, field.type)}
+                    maxLength={field.type === 'rut' ? 12 : undefined}
+                  />
+                )}
+                {errors[field.name] && (
+                  <span className="error-msg"><AlertCircle size={13} />{errors[field.name]}</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="form-footer">
+            <p className="disclaimer">
+              <Shield size={14} />
+              Sus datos están protegidos bajo la Ley 19.628 de Protección de Datos Personales.
+            </p>
+            <button className="btn-primary btn-submit" onClick={handleSubmit}>
+              <FileText size={17} />
+              Enviar solicitud
+              <ChevronRight size={17} />
+            </button>
+          </div>
+        </div>
+
+        <aside className="docs-panel">
+          <h3 className="panel-title">Documentos requeridos</h3>
+          <ul className="docs-list">
+            {service.docs.map((doc, i) => (
+              <li key={i} className="doc-item">
+                <CheckCircle size={15} />
+                {doc}
+              </li>
+            ))}
+          </ul>
+          <div className="cost-card">
+            <div className="cost-row">
+              <span>Arancel base</span>
+              <span>{service.price}</span>
+            </div>
+            <div className="cost-row">
+              <span>Documentos adicionales</span>
+              <span>Variable</span>
+            </div>
+            <div className="cost-divider" />
+            <div className="cost-row cost-total">
+              <span>Total estimado</span>
+              <span>{service.price}+</span>
+            </div>
+          </div>
+          <div className="contact-aside">
+            <p><Phone size={14} />(2) 2345 6789</p>
+            <p><Mail size={14} />contacto@notariacentral.cl</p>
+            <p><Clock size={14} />Lun–Vie 9:00–18:00 · Sáb 9:00–13:00</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  )
+}
+
+function Confirmation({ service, onReset }: { service: Service; onReset: () => void }) {
+  const folio = `NC-${Date.now().toString().slice(-6)}`
+  return (
+    <div className="page-inner confirmation-page">
+      <div className="confirm-card">
+        <div className="confirm-icon">
+          <CheckCircle size={48} />
+        </div>
+        <h2 className="confirm-title">¡Solicitud enviada con éxito!</h2>
+        <p className="confirm-desc">
+          Su trámite de <strong>{service.title}</strong> ha sido recibido y está siendo revisado por nuestro equipo.
+        </p>
+        <div className="confirm-folio">
+          <span className="folio-label">Número de folio</span>
+          <span className="folio-num">{folio}</span>
+        </div>
+        <div className="confirm-steps">
+          <div className="cstep active"><span>1</span><p>Solicitud recibida</p></div>
+          <div className="cstep"><span>2</span><p>Revisión documental</p></div>
+          <div className="cstep"><span>3</span><p>Agendamiento de cita</p></div>
+          <div className="cstep"><span>4</span><p>Firma y entrega</p></div>
+        </div>
+        <p className="confirm-note">
+          Le enviaremos un correo de confirmación con los detalles de su cita. Tiempo estimado: <strong>{service.days}</strong>.
+        </p>
+        <button className="btn-primary" onClick={onReset}>
+          Volver al inicio
+        </button>
       </div>
     </div>
   )
