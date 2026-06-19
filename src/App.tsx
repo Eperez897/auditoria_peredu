@@ -167,7 +167,7 @@ function Navbar({ view, setView, setSelectedService }: {
           </div>
           <div>
             <span className="brand-name">Notaría Central</span>
-            <span className="brand-tagline">Digital · Santiago</span>
+            <span className="brand-tagline">Digital · Valparaíso</span>
           </div>
         </button>
         <div className="navbar-links">
@@ -252,9 +252,9 @@ function Footer() {
         <div className="footer-col">
           <h4>Contacto</h4>
           <ul className="contact-list">
-            <li><MapPin size={14} />Agustinas 814, Of. 502, Santiago Centro</li>
-            <li><Phone size={14} />(2) 2345 6789</li>
-            <li><Mail size={14} />contacto@notariacentral.cl</li>
+            <li><MapPin size={14} />Av. España 2250, Valparaíso</li>
+            <li><Phone size={14} />(+56) 9 2345 6789</li>
+            <li><Mail size={14} />contactonotaria@notariacentral.cl</li>
             <li><Clock size={14} />Lun–Vie: 9:00–18:00 | Sáb: 9:00–13:00</li>
           </ul>
         </div>
@@ -304,7 +304,7 @@ function ServicesPage({ onSelect }: { onSelect: (s: Service) => void }) {
       </div>
       <div className="info-banner">
         <AlertCircle size={18} />
-        <p>¿No encuentra su trámite? Contáctenos al <strong>(2) 2345 6789</strong> o escríbanos a <strong>contacto@notariacentral.cl</strong></p>
+        <p>¿No encuentra su trámite? Contáctenos al <strong>(+56) 9 2345 6789</strong> o escríbanos a <strong>contactonotaria@notariacentral.cl</strong></p>
       </div>
     </div>
   )
@@ -459,8 +459,8 @@ function TramiteForm({ service, onBack, onSubmit }: {
             </div>
           </div>
           <div className="contact-aside">
-            <p><Phone size={14} />(2) 2345 6789</p>
-            <p><Mail size={14} />contacto@notariacentral.cl</p>
+            <p><Phone size={14} />(+56) 9 2345 6789</p>
+            <p><Mail size={14} />contactonotaria@notariacentral.cl</p>
             <p><Clock size={14} />Lun–Vie 9:00–18:00 · Sáb 9:00–13:00</p>
           </div>
         </aside>
