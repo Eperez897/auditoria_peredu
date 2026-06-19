@@ -1,5 +1,5 @@
 import {
-  Scale, FileText, Home, Users, Shield,
+  Scale, FileText, Home, Users, Shield, ChevronRight,
   Phone, Mail, MapPin, Clock, CheckCircle,
   User, Upload, AlertCircle,
   Stamp, Building2, BookOpen, FileSignature, Star
@@ -150,6 +150,121 @@ function formatRut(val: string): string {
 
 export { services, formatRut }
 export type { View, Service, FormField }
+
+
+function Navbar({ view, setView, setSelectedService }: {
+  view: View
+  setView: (v: View) => void
+  setSelectedService: (s: Service | null) => void
+}) {
+  return (
+    <nav className="navbar">
+      <div className="navbar-inner">
+        <button className="navbar-brand" onClick={() => { setView('home'); setSelectedService(null) }}>
+          <div className="brand-emblem">
+            <Scale size={20} />
+          </div>
+          <div>
+            <span className="brand-name">Notaría Central</span>
+            <span className="brand-tagline">Digital · Santiago</span>
+          </div>
+        </button>
+        <div className="navbar-links">
+          <button className={`nav-link ${view === 'home' ? 'active' : ''}`} onClick={() => { setView('home'); setSelectedService(null) }}>Inicio</button>
+          <button className={`nav-link ${view === 'services' ? 'active' : ''}`} onClick={() => setView('services')}>Servicios</button>
+          <a href="#contacto" className="nav-link">Contacto</a>
+          <button className="nav-btn-login" onClick={() => setView('login')}>
+            <User size={15} />
+            Ingresar
+          </button>
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+function HeroSection({ setView }: { setView: (v: View) => void }) {
+  return (
+    <section className="hero">
+      <div className="hero-badge">
+        <Shield size={14} />
+        Autorizado por el Ministerio de Justicia · Folio Nº 4821
+      </div>
+      <h1 className="hero-title">
+        Trámites notariales<br />
+        <span className="hero-accent">sin filas, sin demoras.</span>
+      </h1>
+      <p className="hero-desc">
+        Inicie su trámite en línea las 24 horas. Nuestros notarios certificados le acompañan en cada etapa del proceso con total validez legal.
+      </p>
+      <div className="hero-cta">
+        <button className="btn-primary" onClick={() => setView('services')}>
+          Iniciar trámite
+          <ChevronRight size={18} />
+        </button>
+        <button className="btn-ghost">
+          <Phone size={16} />
+          Consulta gratuita
+        </button>
+      </div>
+      <div className="hero-stats">
+        <div className="stat">
+          <span className="stat-num">+24.000</span>
+          <span className="stat-label">Escrituras firmadas</span>
+        </div>
+        <div className="stat-divider" />
+        <div className="stat">
+          <span className="stat-num">98,6%</span>
+          <span className="stat-label">Clientes satisfechos</span>
+        </div>
+        <div className="stat-divider" />
+        <div className="stat">
+          <span className="stat-num">32 años</span>
+          <span className="stat-label">De trayectoria</span>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="footer" id="contacto">
+      <div className="footer-inner">
+        <div className="footer-col">
+          <div className="footer-brand">
+            <Scale size={22} />
+            <span>Notaría Central Digital</span>
+          </div>
+          <p className="footer-desc">Servicios notariales con plena validez legal, disponibles las 24 horas.</p>
+          <div className="footer-badges">
+            <span><Shield size={13} />Ministerio de Justicia</span>
+            <span><Star size={13} />ISO 27001</span>
+          </div>
+        </div>
+        <div className="footer-col">
+          <h4>Servicios</h4>
+          <ul>
+            {services.map(s => <li key={s.id}>{s.title}</li>)}
+          </ul>
+        </div>
+        <div className="footer-col">
+          <h4>Contacto</h4>
+          <ul className="contact-list">
+            <li><MapPin size={14} />Agustinas 814, Of. 502, Santiago Centro</li>
+            <li><Phone size={14} />(2) 2345 6789</li>
+            <li><Mail size={14} />contacto@notariacentral.cl</li>
+            <li><Clock size={14} />Lun–Vie: 9:00–18:00 | Sáb: 9:00–13:00</li>
+          </ul>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <span>© 2025 Notaría Central Digital · Todos los derechos reservados</span>
+        <span>Privacidad · Términos · Accesibilidad</span>
+      </div>
+    </footer>
+  )
+}
 
 export default function App() {
   return <div className="app" />
