@@ -6,8 +6,9 @@ import {
   Stamp, Building2, BookOpen, FileSignature, Star
 } from 'lucide-react'
 import './App.css'
+import AuditSection from './AuditSection'
 
-type View = 'home' | 'services' | 'tramite' | 'confirmation' | 'login'
+type View = 'home' | 'services' | 'tramite' | 'confirmation' | 'login' | 'auditoria'
 type ServiceId = 'escritura' | 'poder' | 'testamento' | 'autenticacion' | 'sociedad' | 'herencia'
 
 interface Service {
@@ -174,6 +175,10 @@ function Navbar({ view, setView, setSelectedService }: {
           <button className={`nav-link ${view === 'home' ? 'active' : ''}`} onClick={() => { setView('home'); setSelectedService(null) }}>Inicio</button>
           <button className={`nav-link ${view === 'services' ? 'active' : ''}`} onClick={() => setView('services')}>Servicios</button>
           <a href="#contacto" className="nav-link">Contacto</a>
+          <button className={`nav-link audit-nav ${view === 'auditoria' ? 'active' : ''}`} onClick={() => setView('auditoria')}>
+            <Shield size={14} />
+            Auditoría
+          </button>
           <button className="nav-btn-login" onClick={() => setView('login')}>
             <User size={15} />
             Ingresar
@@ -617,6 +622,7 @@ export default function App() {
           <Confirmation service={selectedService} onReset={() => { setView('home'); setSelectedService(null) }} />
         )}
         {view === 'login' && <LoginPage onBack={() => setView('home')} />}
+        {view === 'auditoria' && <AuditSection />}
       </main>
       <Footer />
     </div>

@@ -1,0 +1,3 @@
+El presente informe documenta el análisis de vulnerabilidades web realizado sobre el portal de la Notaría Central Digital (https://  auditoria-peredu.vercel.app/), en el contexto de la asignatura de Fundamentos de Seguridad de la Información. El objetivo es identificar, demostrar y clasificar vulnerabilidades presentes en aplicaciones web, utilizando como entorno controlado la plataforma DVWA, y proponer medidas de prevención y mitigación aplicables al contexto de una notaría virtual.
+
+Una notaría digital maneja activos de alto valor como contratos, escrituras públicas, datos de identidad de clientes y registros legales. Por ello, las vulnerabilidades encontradas tienen un impacto crítico en la confidencialidad, integridad y disponibilidad de la información.
