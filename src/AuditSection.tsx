@@ -1,4 +1,4 @@
-import { Shield, AlertTriangle, ChevronDown, ChevronUp, ExternalLink, Lock, Code, Terminal } from 'lucide-react'
+import { Shield, AlertTriangle, ChevronDown, ChevronUp, ExternalLink, Code, Terminal } from 'lucide-react'
 import { useState } from 'react'
 
 import sqli1 from '../docs_peredu/img_peredu/sqli_peredu_1.png'
@@ -223,6 +223,7 @@ function RiskMatrix() {
     </div>
   )
 }
+
 
 function VulnCard({ v }: { v: Vuln }) {
   const [open, setOpen] = useState(false)
